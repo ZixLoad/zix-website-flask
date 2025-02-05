@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Jeu de géographie</title>
+    <script>
+        let timeLeft = 60;
+        let timerInterval;
+
+        function updateTimer() {
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('game-form').submit();
+                return;
+            }
+            document.getElementById('timer').textContent = timeLeft + ' secondes restantes';
+            timeLeft--;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            timerInterval = setInterval(updateTimer, 1000);
+        });
+    </script>
+</head>
+<body>
+    <h1>Jeu de géographie</h1>
+    <p>Vous avez 1 minute pour répondre aux questions.</p>
+    <p id="timer">60 secondes restantes</p>
+    
+    <form id="game-form" method="post" action="{{ url_for('game') }}">
+        {% if questions %}
+            {% for country, _ in questions %}
+                <div>
+                    <label>{{ country }}</label>
+                    <input type="text" name="answers[{{ loop.index0 }}]" required>
+                </div>
+            {% endfor %}
+            
+            <input type="hidden" name="total_questions" value="{{ questions|length }}">
+            <button type="submit">Soumettre</button>
+        {% else %}
+            <p>Pas de questions disponibles.</p>
+        {% endif %}
+    </form>
+</body>
+</html>

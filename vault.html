@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vault</title>
+</head>
+<body>
+    <h1>Bienvenue, {{ current_user.username }}!</h1>
+    <form method="POST">
+        <label for="note">Votre note :</label><br>
+        <textarea id="note" name="note" rows="10" cols="30">{{ note }}</textarea><br>
+        <button type="submit">Sauvegarder</button>
+    </form>
+    <a href="{{ url_for('logout') }}">Déconnexion</a>
+    <br>
+    <a href="{{ url_for('homepage') }}">Retour à l'accueil</a>
+</body>
+</html>

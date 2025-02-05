@@ -1,0 +1,38 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Home  Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Zix's website</h1>
+    </header>
+    <form method="post" action="/">
+        <label for="username">Votre pseudo minecraft que vous voulez :</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">Vérifier</button>
+    </form>
+    {% if username is not none %}
+        {% if available is none %}
+            <p>Le pseudo "{{ username }}" est disponible !</p>
+        {% elif available %}
+            <p>Le pseudo "{{ username }}" est disponible !</p>
+        {% else %}
+            <p>Le pseudo "{{ username }}" est déjà pris.</p>
+        {% endif %}
+    {% endif %}
+
+   <!-- Link to About page -->
+    <a href="{{ url_for('about') }}">About page</a>
+
+<!-- Link to Vault page -->
+    <a href="{{ url_for('vault') }}">Vault Page</a>
+
+<!-- Link to Stats page -->
+    <a href="{{ url_for('statslol') }}">Stats Page</a>
+</body>
+</html>

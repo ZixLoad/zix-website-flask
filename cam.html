@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera Stream</title>
+</head>
+<body>
+    <h1>Stream de la caméra</h1>
+    <video id="localVideo" autoplay muted></video>
+
+    <script>
+        const localVideo = document.getElementById("localVideo");
+
+        // Créer une connexion WebRTC
+        const pc = new RTCPeerConnection();
+
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            .then(stream => {
+                localVideo.srcObject = stream;
+                stream.getTracks().forEach(track => pc.addTrack(track, stream));
+            });
+
+        pc.onicecandidate = event => {
+            if (event.candidate) {
+                console.log(event.candidate);
+            }
+        };
+
+        // Envoyer une offre au serveur
+        pc.createOffer().then(offer => {
+            return pc.setLocalDescription(offer);
+        }).then(() => {
+            return fetch("/offer", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    sdp: pc.localDescription.sdp,
+                    type: pc.localDescription.type
+                })
+            });
+        }).then(response => response.json()).then(answer => {
+            pc.setRemoteDescription(new RTCSessionDescription(answer));
+        }).catch(error => console.error(error));
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Jeu de géographie - Résultats</title>
+</head>
+<body>
+    <h1>Résultats du jeu</h1>
+    <p>Votre score est {{ score }}.</p>
+
+    <form method="POST" action="{{ url_for('came') }}">
+        <input type="hidden" name="score" value="{{ score }}">
+        <button type="submit">Sauvegarder le score</button>
+    </form>
+</body>
+</html>
