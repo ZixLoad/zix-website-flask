@@ -6,13 +6,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import requests
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'  # Remplacez par une clé secrète aléatoire et complexe
+app.config['SECRET_KEY'] = 'your_secret_key' 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# Modèle utilisateur
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
@@ -31,12 +31,12 @@ def homepage():
     available = None
 
     if request.method == 'POST':
-        # Obtenir le pseudonyme soumis par l'utilisateur
+    
         username = request.form.get('username')
-        # Vérifier la disponibilité du pseudonyme
+     
         available = check_username_availability(username)
 
-    # Rendre le template avec les résultats de la vérification
+
     return render_template('index.html', username=username, available=available)
 
 @app.route('/about')
@@ -61,11 +61,11 @@ def register():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        # Vérifiez si l'utilisateur existe déjà
+
         if User.query.filter_by(username=username).first():
             flash('Le nom d’utilisateur existe déjà.', 'danger')
             return redirect(url_for('register'))
-        # Hachez le mot de passe avant de le stocker
+    
         hashed_password = generate_password_hash(password, method='sha256')
         user = User(username=username, password=hashed_password)
         db.session.add(user)
@@ -82,7 +82,7 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         user = User.query.filter_by(username=username).first()
-        # Vérifiez si l'utilisateur existe et le mot de passe est correct
+    
         if user and check_password_hash(user.password, password):
             login_user(user)
             flash('Connexion réussie!', 'success')
@@ -104,13 +104,13 @@ def check_username_availability(username):
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            return False  # Le pseudo est déjà pris
+            return False  
         elif response.status_code == 204:
-            return True   # Le pseudo est disponible
+            return True  
         else:
-            return None    # Erreur ou autre situation
+            return None   
     except requests.RequestException as e:
-        # Gestion des erreurs de requêtes
+
         print(f"Request failed: {e}")
         return None
 
@@ -122,16 +122,16 @@ def statslol():
     opgg_url = None
 
     if request.method == 'POST':
-        # Obtenir le pseudonyme et la région soumis par l'utilisateur
+     
         username = request.form.get('username')
         region = request.form.get('region')
 
-        # Remplacer le # par un tiret -
+
         if username and region:
             username_cleaned = username.replace('#', '-').replace(' ', '')
             opgg_url = f"https://www.op.gg/summoners/{region}/{username_cleaned}"
 
-    # Rendre le template avec l'URL OP.GG
+   
     return render_template('stats.html', username=username, region=region, opgg_url=opgg_url)
 
 @app.route('/home', methods=['GET', 'POST'])
@@ -139,5 +139,5 @@ def home():
  return render_template('home.html')
 
 if __name__ == '__main__':
-    db.create_all()  # Crée les tables de la base de données si elles n'existent pas déjà
+    db.create_all() 
     app.run(debug=True)
